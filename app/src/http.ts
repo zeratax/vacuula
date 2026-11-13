@@ -2,6 +2,7 @@ import axios from "axios";
 import i18n from "./i18n";
 import { Neato, type QuickRobotInfo } from "./types";
 import type { NoGoLine, VacuulaMapData, Zone } from "./components/map/types";
+import type { LivePoseSnapshot } from "./components/map/livePose";
 
 declare module 'axios' {
   export interface AxiosRequestConfig {
@@ -119,6 +120,11 @@ export class Http {
 
   static demoteFloorplan(serial: string, mapId: string) {
     return instance.delete(`/robot/${serial}/maps/${mapId}`)
+  }
+
+  /** Live position: status, last pose, trail and the robot-to-map calibration (see components/map/livePose.ts) */
+  static getRobotPose(serial: string) {
+    return instance.get<LivePoseSnapshot>(`/robot/${serial}/pose`, { skipLoader: true })
   }
 
   static getRobots() {

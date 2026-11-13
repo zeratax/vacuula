@@ -8,6 +8,16 @@
     background: $bg;
 }
 
+// Live robot position, stacked on the map canvas (see LivePoseOverlay)
+.livePose {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
 // Container
 .container {
     position: relative;

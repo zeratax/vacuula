@@ -388,7 +388,7 @@ export function drawCrosshair(
 
 const DOCK_VIEWBOX = { x: -10, y: -18, w: 20, h: 36 }
 const DOCK_UNIT_R = 16
-const ROBOT_RADIUS_MM = 165
+export const ROBOT_RADIUS_MM = 165
 
 let dockImage: HTMLImageElement | null = null
 let dockReady = false

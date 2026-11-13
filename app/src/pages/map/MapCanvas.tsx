@@ -6,6 +6,7 @@ import { DRAWING } from '../../components/map/constants'
 import type { Point, UseState } from '../../components/map/types'
 import { getCrosshairWorldCoords } from '../../components/map/utils'
 import { useMap, type ExtraDrawFn } from '../../components/map/useMap'
+import LivePoseOverlay from '../../components/map/LivePoseOverlay'
 
 // Single source of truth for the page's mode union — map.tsx imports this rather
 // than declaring its own copy.
@@ -103,6 +104,7 @@ export default function MapCanvas({
                     touchAction: 'none'
                 }}
             />
+            <LivePoseOverlay mapId={mapId} zoom={zoom} offset={offset} />
 
             {mode === 'boundary-edit' && (
                 <div className={styles.actionButtons}>

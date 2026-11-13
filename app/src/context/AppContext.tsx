@@ -11,6 +11,7 @@ import { useTheme } from '../theme'
 import Loading from '../pages/loading/loading'
 import { ServerHasOutdatedRobot, ServerUnreachable } from '../components/require/emptyState'
 import { isRobotOutdated } from '../utils/version'
+import { applyRobotPos, livePoseFromSnapshot, livePoseStore, NO_LIVE_POSE, type RobotPosEvent } from '../components/map/livePose'
 
 interface AppContextType {
     serverInfo: ServerInfo,
@@ -194,7 +195,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
             `${BASE_PATH}/api/robot/${robot.serial}/connect`,
         );
 
+        // live position: kept outside React state, only the map overlay repaints for it (see livePose.ts)
+        let cancelled = false       // a reply for the previous robot must not paint on this one's map
+        livePoseStore.update(() => NO_LIVE_POSE)
+        // named event: never reaches onmessage below
+        events.addEventListener('robot_pos', (event) => {
+            let pos: RobotPosEvent
+            try {
+                pos = JSON.parse((event as MessageEvent).data) as RobotPosEvent
+            } catch (err) {
+                console.error('bad robot_pos event', err)
+                return
+            }
+            if (pos.serial === robot.serial) livePoseStore.update(cur => applyRobotPos(cur, pos))
+        })
+
         events.onopen = () => {
+            // (re)connected: catch up on what was missed, and get the calibration
+            Http.getRobotPose(robot.serial)
+                .then(res => {
+                    if (!cancelled && res.data.serial === robot.serial) livePoseStore.update(cur => livePoseFromSnapshot(res.data, cur))
+                })
+                .catch(err => console.error('Failed to fetch live pose', err))
+
             if (!robots) return;
             if (robot.type === RobotType.NeatoGen3) {
                 GEN3_COMMANDS.getRobotState(robot.serial).then((res) => {
@@ -282,6 +305,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         };
 
         return () => {
+            cancelled = true;
             events.close();
         };
     }, [robot?.serial, robot?.type]);
