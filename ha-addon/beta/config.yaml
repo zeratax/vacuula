@@ -30,6 +30,9 @@ options:
   MDNS_ENABLED: true
   HA_INGRESS: true
   LOG_LEVEL: "info"
+  POSE_UDP_PORT: 0
+  POSE_FORWARD: ""
+  POSE_SERIAL: ""
 
 schema:
   GEN3_PORT: int(100,999)
@@ -39,6 +42,9 @@ schema:
   GEN4_ENABLED: bool
   MDNS_ENABLED: bool
   LOG_LEVEL: "list(debug|info|warning|error)?"
+  POSE_UDP_PORT: "int(0,65535)?"
+  POSE_FORWARD: "str?"
+  POSE_SERIAL: "str?"
   HA_INGRESS: "bool?"
   TZ: "str?"
   HOST_IP: "str?"
