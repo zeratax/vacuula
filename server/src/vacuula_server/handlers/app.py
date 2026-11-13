@@ -4,7 +4,7 @@ from vacuula_server.conn import Gen2Gen3Conn
 from vacuula_server.gen3.commands import send_chunk, build_command
 from vacuula_server.env import GEN3_PORT, GEN4_PORT, HA_INGRESS
 from vacuula_server.constants import APP_VERSION, MAPS_DIR, MINIMUM_INSTALLER_VERSION
-from vacuula_server.state import robot_connections, client_connections, pending_requests, PendingRequest
+from vacuula_server.state import robot_connections, client_connections, pending_requests, PendingRequest, ClientQueue
 from vacuula_server.handlers.events import robots_snapshot, notify_robots_changed, CLIENT_QUEUE_MAX
 from vacuula_server.db import get_session
 from vacuula_server.models.persistent_map import FloorPlan, PersistentMap
@@ -17,6 +17,7 @@ import queue
 import os
 from vacuula_server.gen4.handlers import robot_send_request
 from vacuula_server.server_tz import server_timezone, utc_offset_minutes
+from vacuula_server import livepose
 
 from typing import TYPE_CHECKING, Sequence
 if TYPE_CHECKING:
@@ -203,7 +204,7 @@ def connect_robot(req: RouterHandler, serial: str) -> None:
     req.send_header("Connection", "keep-alive")
     req.end_headers()
 
-    q: queue.Queue = queue.Queue(maxsize=CLIENT_QUEUE_MAX)
+    q: queue.Queue = ClientQueue(maxsize=CLIENT_QUEUE_MAX)
     conn = {"client": "test", "serial": serial, "queue": q}
     client_connections.append(conn)
 
@@ -225,6 +226,14 @@ def connect_robot(req: RouterHandler, serial: str) -> None:
     finally:
         if conn in client_connections:
             client_connections.remove(conn)
+
+def get_robot_pose(req: RouterHandler, serial: str) -> None:
+    """GET /robot/<serial>/pose - live position: status, last pose, trail (robot metres) and map calibration"""
+    if get_robot_by_serial(serial) is None:
+        req.send_not_found("Robot not found")
+        return
+
+    req.send_response_data(livepose.snapshot(serial), True, 200, cache_control="no-store")
 
 def _send_quietly(write):
     # Run a client-socket write; swallow the error if the client already hung up.

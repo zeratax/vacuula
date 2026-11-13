@@ -73,6 +73,11 @@ MDNS_ENABLED: bool = _get_bool_env("MDNS_ENABLED", True)
 HOST_IP: str = _get_str_env("HOST_IP", "0.0.0.0")
 LOG_LEVEL: str = _get_str_env("LOG_LEVEL", "INFO").upper()
 
+# Live robot position (UDP "NEAP v4" datagrams from a patched robot), see livepose.py
+POSE_UDP_PORT: int = _get_int_env("POSE_UDP_PORT", 0)         # 0 = off
+POSE_FORWARD: str | None = _get_str_env("POSE_FORWARD", None)  # "host:port": copy every datagram there
+POSE_SERIAL: str | None = _get_str_env("POSE_SERIAL", None)    # robot to credit when the sender IP is unknown
+
 # HA Ingress stuff
 # By config.yaml default for this value will be true, but others not running via HA App it never even has to pass this check
 # SUPERVISOR_TOKEN is injected, should not be set by user
@@ -96,6 +101,8 @@ if not (1 <= GEN4_PORT <= 65535 and 1 <= VACUULA_PORT <= 65535):
         "GEN4_PORT and VACUULA_PORT must be in port range (1-65535). "
         f"Got GEN4_PORT={GEN4_PORT}, VACUULA_PORT={VACUULA_PORT}"
     )
+if not (0 <= POSE_UDP_PORT <= 65535):
+    raise ValueError(f"POSE_UDP_PORT must be 0 (off) or a port (1-65535). Got POSE_UDP_PORT={POSE_UDP_PORT}")
 
 
 def get_docker_host_ip() -> str | None:

@@ -4,10 +4,11 @@ import logging
 import threading
 from vacuula_server.constants import APP_VERSION
 from vacuula_server.db import check_db_is_up_to_date
-from vacuula_server.env import GEN3_ENABLED, GEN4_ENABLED, HA_INGRESS, MDNS_ENABLED
+from vacuula_server.env import GEN3_ENABLED, GEN4_ENABLED, HA_INGRESS, MDNS_ENABLED, POSE_UDP_PORT
 import vacuula_server.gen3.init 
 import vacuula_server.gen4.init
 import vacuula_server.handlers.init
+import vacuula_server.livepose
 from vacuula_server.handlers.init_ha_ingress import start as start_ha_ingress
 from vacuula_server.handlers.setup import MDNSAdvertiser, ensure_ssl_certificate
 from vacuula_server.logger import setup_logging
@@ -29,6 +30,9 @@ def main():
         threading.Thread(target=vacuula_server.gen3.init.start, daemon=True).start()
     if GEN4_ENABLED:
         threading.Thread(target=vacuula_server.gen4.init.start, daemon=True).start()
+
+    if POSE_UDP_PORT > 0:
+        threading.Thread(target=vacuula_server.livepose.start, daemon=True).start()
 
     threading.Thread(target=vacuula_server.handlers.init.start, daemon=True).start()
     if HA_INGRESS:
