@@ -1,0 +1,11 @@
+b726c1b032e09bfe83c3bd4e93eaf5a262e68b91b815538b6dc7cce1a582932b  /server/.venv/lib/python3.14/site-packages/vacuula_server/__init__.py
+632194748e9ad4e981170ff9848ab85b10209d8f4db4db266e3b4c1517b7f7aa  /server/.venv/lib/python3.14/site-packages/vacuula_server/conn.py
+33296b1bdeb3c8f8e965e80281ccc70cf97b40fc7a2a419bd2079b2e2a86cbc9  /server/.venv/lib/python3.14/site-packages/vacuula_server/env.py
+ed3fc0cd7dfc324062c0abb3c00398c39e0c42b7878a8db754b90615e866a9c5  /server/.venv/lib/python3.14/site-packages/vacuula_server/state.py
+f4aba0b016fd470cfd3bb89a268ff7195c4f28c6754a9926773a44373b1d8649  /server/.venv/lib/python3.14/site-packages/vacuula_server/handlers/app.py
+5b650136e60e0e81ec50b9fef3d11e2944d2c0eb5a9f6448c5b9cb68a7bd2078  /server/.venv/lib/python3.14/site-packages/vacuula_server/handlers/route_matcher.py
+f40ff2f833522ba7f2bddf7b5417954d3ca1541a8061f8a788a5229ab83a7887  /server/.venv/lib/python3.14/site-packages/vacuula_server/gen3/event_handler.py
+d584bbea6e7b00f64ee6abc7dc5ba0e0087519074efc11268839b3e98e4a9af4  /server/.venv/lib/python3.14/site-packages/vacuula_server/gen3/handlers/nucleo.py
+69d8a00e76fd71760b28baa14a7aa143470eea4fd29ba74e7e286f2c0dd6b9e8  /server/web/index.html
+d1b1303754c29a03e23b84a778aa0dcb42eb8a269690a25490cd1665c7216c08  /server/web/assets/index-B_LnrG9R.css
+9905e3ddb7bdcc0a916d3716a8132d4aaeee8305edc15c2dc8464b44eae2545b  /server/web/assets/index-C2Be4at5.js

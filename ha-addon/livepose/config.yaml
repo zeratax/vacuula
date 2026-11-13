@@ -1,0 +1,54 @@
+# Local Home Assistant add-on: stock Vacuula 1.1.0 + live robot position (see README.md).
+# Copy the folder produced by build.sh to /addons/vacuula_livepose on the HA host.
+name: "Vacuula (live pose)"
+version: "1.1.0-livepose.1"
+slug: vacuula_livepose
+description: Vacuula with the live robot position on the map (UDP pose from a patched Neato D7)
+url: "https://github.com/vacuula/vacuula"
+arch:
+  - aarch64
+  - amd64
+init: false
+host_network: true
+# manual on purpose: the stock add-on uses the same ports, so the two must never both start on their own.
+# Switch to auto (and the stock add-on to manual) once the swap is done and tested.
+boot: manual
+# no `image:` -> the supervisor builds the Dockerfile in this folder
+
+ingress: true
+ingress_port: 0
+panel_icon: mdi:robot-vacuum-variant
+
+map:
+  - type: addon_config
+    read_only: false
+    path: /server/data
+
+# same options as the stock add-on instance (VACUULA_PORT 8089 is what the live instance uses) plus the live pose ones
+options:
+  GEN3_PORT: 335
+  GEN4_PORT: 3443
+  VACUULA_PORT: 8089
+  GEN3_ENABLED: true
+  GEN4_ENABLED: true
+  MDNS_ENABLED: true
+  HA_INGRESS: true
+  LOG_LEVEL: "info"
+  POSE_UDP_PORT: 7700
+  POSE_FORWARD: "127.0.0.1:7701"
+  POSE_SERIAL: ""
+
+schema:
+  GEN3_PORT: int(100,999)
+  GEN4_PORT: int
+  VACUULA_PORT: int
+  GEN3_ENABLED: bool
+  GEN4_ENABLED: bool
+  MDNS_ENABLED: bool
+  LOG_LEVEL: "list(debug|info|warning|error)?"
+  POSE_UDP_PORT: "int(0,65535)?"
+  POSE_FORWARD: "str?"
+  POSE_SERIAL: "str?"
+  HA_INGRESS: "bool?"
+  TZ: "str?"
+  HOST_IP: "str?"
